@@ -22,16 +22,25 @@ exports.concatProxyResult = function(opts_list, req, res,functions){
 
 function send_request(option, req, res, result, functions){
   var deferred = Q.defer();
-  var params = {};
-  // var params_config = JSON.parse(option.params);
-  if (option.params_default){
-    option.qs = option.params_default;
-  }
+  var config_params = option.params;
   request_opts = {
-    url: opition.url,
+    url: option.url,
     timeout: 5000,
     method: option.method || "GET"
   }
+  if (option.params_default){
+    qs = option.params_default;
+  }
+  else{
+    qs = {};
+  }
+  for (key in config_params){
+    var value = req.query[config_params[key]]
+    if (value){
+      qs[key] = value
+    }
+  }
+  request_opts.qs = qs;
   request(request_opts, function(err, r, body){
     if (err){ deferred.reject(err);}
     if (body){

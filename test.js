@@ -6,7 +6,7 @@ exports.show = function(req, res){
       url: "http://ptcms.csdn.net/article/service/get_article",
       method: "GET",
       handles: ["getArticleBody"],
-      params: ["aid"]
+      params: {"aid":"aid"}
     },
     { 
       url: "http://ptcms.csdn.net/article/service/get_article_list",
@@ -31,7 +31,11 @@ exports.show = function(req, res){
 
 
 function getArticleBody(data, req, res){
-  return {"状态码":data.status}
+  if (data && data.msg)
+    return {"信息":data.msg}
+  else{
+    return {"文章详情": data.content}
+  }
 }
 
 function getArticleType(data, req, res){
