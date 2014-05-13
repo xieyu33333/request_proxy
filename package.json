@@ -1,0 +1,21 @@
+{
+  "name": "proxy_request",
+  "version": "0.0.0",
+  "description": "接口代替插件",
+  "main": "proxy.js",
+  "dependencies": {
+    "q": "x",
+    "express": "x",
+    "iconv-lite": "0.2.11",
+    "bufferhelper": "0.2.0",
+    "request": "x"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "proxy"
+  ],
+  "author": "xieyu",
+  "license": "MIT"
+}
