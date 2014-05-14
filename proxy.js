@@ -1,10 +1,5 @@
-var http = require( 'http' )
-  , url = require( 'url' )
-  , qs = require( 'querystring' )
-  , iconv = require( 'iconv-lite' )
-  , BufferHelper = require( 'bufferhelper' )
-  , Q = require('q')
-  , request = require('request');
+var Q = require('q');
+var request = require('request');
 
 
 exports.concatProxyResult = function(opts_list, req, res,functions){

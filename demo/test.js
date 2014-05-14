@@ -1,4 +1,4 @@
-var proxy = require("./proxy.js");
+var proxy = require("../proxy.js");
 
 exports.show = function(req, res){
   var opts = [
