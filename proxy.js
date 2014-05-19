@@ -2,11 +2,11 @@ var Q = require('q');
 var request = require('request');
 
 
-exports.concatProxyResult = function(opts_list, req, res,functions){
+function proxy(opts_list, req, res){
   var arr = [];
   var result = {};
   for (i=0;i<opts_list.length;i++){
-    arr.push(send_request(opts_list[i], req, res, result, functions))
+    arr.push(send_request(opts_list[i], req, res, result))
   }
   Q.all(arr).then(
     function(){
@@ -15,13 +15,14 @@ exports.concatProxyResult = function(opts_list, req, res,functions){
   );
 }
 
-function send_request(option, req, res, result, functions){
+function send_request(option, req, res, result){
   var deferred = Q.defer();
   var config_params = option.params;
   request_opts = {
     url: option.url,
-    timeout: 5000,
-    method: option.method || "GET"
+    timeout: option.timeout || 5000,
+    method: option.method.toUpperCase()  || "GET",
+    header: option.header || {}
   }
   if (option.params_default){
     qs = option.params_default;
@@ -39,7 +40,14 @@ function send_request(option, req, res, result, functions){
   request(request_opts, function(err, r, body){
     if (err){ deferred.reject(err);}
     if (body){
-      var data = JSON.parse(body);
+      try{
+        var data = JSON.parse(body);
+      }
+      catch(err){
+        console.log("返回结果无法进行JSON解析");
+        res.send({msg:"服务器错误"})
+        deferred.reject(err);
+      }
     }
     if (!option.handles){
       extend(result,data);
@@ -47,7 +55,7 @@ function send_request(option, req, res, result, functions){
     }
     else{
       for(i=0; i < option.handles.length; i++){
-        extend(result, functions[option.handles[i]](data, req, res))
+        extend(result, option.handles[i](data, req, res))
       }
       deferred.resolve();
     }
@@ -59,4 +67,4 @@ var extend=function(o,n,override){
    for(var p in n)if(n.hasOwnProperty(p) && (!o.hasOwnProperty(p) || override))o[p]=n[p];
 };
 
-// module.exports=httpHelper;
+module.exports = proxy;

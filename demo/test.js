@@ -1,17 +1,21 @@
 var proxy = require("../proxy.js");
+var accessLog = require("../lib/access_log.js");
+module.exports = function(app){
+  app.get( '/test', show);
+}
 
-exports.show = function(req, res){
+var show = function(req, res){
   var opts = [
     {
       url: "http://ptcms.csdn.net/article/service/get_article",
       method: "GET",
-      handles: ["getArticleBody"],
+      handles: [getArticleBody, accessLog],
       params: {"aid":"aid"}
     },
     { 
       url: "http://ptcms.csdn.net/article/service/get_article_list",
       method: "GET",
-      handles: ["getArticleType"],
+      handles: [getArticleType],
       params: {"pageno":"page",
                "pagesize":"size",
                "channel_id":"channel_id",
@@ -24,9 +28,8 @@ exports.show = function(req, res){
               }
     }
   ]
-  var functions = {"getArticleBody":getArticleBody, "getArticleType":getArticleType}
 
-  proxy.concatProxyResult(opts, req, res, functions);
+  proxy(opts, req, res);
 }
 
 
